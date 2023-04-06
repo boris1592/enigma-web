@@ -1,4 +1,4 @@
-from string import ascii_uppercase
+from emulator_config import EnigmaConfig
 
 
 def pairs_to_dict(pairs):
@@ -12,20 +12,13 @@ def pairs_to_dict(pairs):
 
 
 class EnigmaEmulator:
-    def __init__(
-        self,
-        rotors: list[str],
-        reflector: list[str],
-        plugs: list[str],
-        positions: list[int],
-        alphabet=ascii_uppercase,
-    ):
-        self.__alphabet = alphabet
-        self.__positions = positions
-        self.__rotors = [pairs_to_dict(rotor) for rotor in rotors]
-        self.__reflector = pairs_to_dict(reflector)
+    def __init__(self, config: EnigmaConfig):
+        self.__alphabet = config.alphabet
+        self.__positions = config.positions
+        self.__rotors = [pairs_to_dict(rotor) for rotor in config.rotors]
+        self.__reflector = pairs_to_dict(config.reflector)
         self.__plugs = pairs_to_dict(
-            [(letter, letter) for letter in alphabet] + plugs
+            [(letter, letter) for letter in config.alphabet] + config.plugs
         )
 
     def __rotate_rotors(self):
