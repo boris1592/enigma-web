@@ -1,5 +1,5 @@
+from emulator_implementation import EnigmaEmulator
 from emulator_config import EnigmaConfig
-from emulator import EnigmaEmulator
 
 
 class EnigmaEmulatorsFactory:
