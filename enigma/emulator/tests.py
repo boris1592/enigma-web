@@ -1,6 +1,6 @@
 from django.test import TestCase
-from emulator.config import random_config
-from emulator.emulator import EnigmaEmulator
+from .config import random_config
+from .emulator import EnigmaEmulator
 from random import sample
 
 
