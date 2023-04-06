@@ -7,7 +7,7 @@ from random import sample
 class EnigmaEmulationTests(TestCase):
     def test_emulation(self):
         for _ in range(5):
-            config = random_config(3, 'abcfdefgh')
+            config = random_config(3, 'abcdefgh')
             encrypter = EnigmaEmulator(config)
             decrypter = EnigmaEmulator(config)
 
