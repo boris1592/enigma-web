@@ -30,4 +30,5 @@ jobs:
         pip install -r requirements.txt
     - name: Run Tests
       run: |
-        python enigma/manage.py test
+        cd enigma
+        python manage.py test
