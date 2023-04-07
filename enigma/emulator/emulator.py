@@ -19,17 +19,31 @@ class Rotor:
         self.__normal_dict = {str1[i]: str2[i] for i in range(len(str1))}
         self.__reverse_dict = {str2[i]: str1[i] for i in range(len(str2))}
 
+    # The hardest part of the emulation
     def pass_through(self, letter, reverse):
         source = self.__str1 if not reverse else self.__str2
+        dest = self.__str1 if reverse else self.__str2
+
+        # Shift the letter
         index = (
             source.find(letter) + (self.pos if not reverse else -self.pos)
         ) % len(source)
-        cycled = source[index]
-        return (
-            self.__normal_dict[cycled]
+        letter = source[index]
+
+        # Get transformed letter
+        letter = (
+            self.__normal_dict[letter]
             if not reverse
-            else self.__reverse_dict[cycled]
+            else self.__reverse_dict[letter]
         )
+
+        # Shift letter back
+        index = (
+            dest.find(letter) + (self.pos if reverse else -self.pos)
+        ) % len(dest)
+        letter = dest[index]
+
+        return letter
 
 
 class EnigmaEmulator:
@@ -75,5 +89,5 @@ class EnigmaEmulator:
         return letter
 
     def process(self, text):
-        encrypted = ''.join(map(lambda l: self.__press_key(l), text))
+        encrypted = ''.join(map(lambda letter: self.__press_key(letter), text))
         return encrypted

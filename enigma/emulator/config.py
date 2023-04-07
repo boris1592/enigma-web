@@ -1,5 +1,4 @@
-from random import shuffle, randint, sample
-from itertools import permutations
+from random import shuffle, randint
 
 
 def random_pairs(data):
@@ -16,12 +15,14 @@ def random_pairs(data):
     return result
 
 
+def shuffle_string(string):
+    copy = list(string)
+    shuffle(copy)
+    return ''.join(copy)
+
+
 def random_config(rotors_count, alphabet):
-    # TODO : Replace with something a bit more efficient
-    rotors = sample(
-        list(map(lambda x: ''.join(x), permutations(alphabet))),
-        rotors_count,
-    )
+    rotors = [shuffle_string(alphabet) for _ in range(rotors_count)]
     reflector = random_pairs(alphabet)
     plugs = random_pairs(alphabet)
     positions = [randint(0, len(alphabet)) for _ in range(rotors_count)]
