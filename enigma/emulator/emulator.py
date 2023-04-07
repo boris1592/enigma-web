@@ -48,6 +48,8 @@ class Rotor:
 
 class EnigmaEmulator:
     def __init__(self, config: EnigmaConfig):
+        config.validate()
+
         self.__alphabet = config.alphabet
         self.__rotors = [
             Rotor(config.positions[i], config.alphabet, rotor)
