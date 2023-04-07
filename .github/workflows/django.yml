@@ -23,6 +23,7 @@ jobs:
         python-version: ${{ matrix.python-version }}
     - name: Setup Enviroment
       run: |
+        cd enigma
         cat .env.example >> .env
     - name: Install Dependencies
       run: |
