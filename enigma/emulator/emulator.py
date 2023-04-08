@@ -12,36 +12,31 @@ def pairs_to_dict(pairs):
 
 
 class Rotor:
-    def __init__(self, pos, str1, str2):
+    def __init__(self, pos, alphabet, permutation):
         self.pos = pos
-        self.__str1 = str1
-        self.__str2 = str2
-        self.__normal_dict = {str1[i]: str2[i] for i in range(len(str1))}
-        self.__reverse_dict = {str2[i]: str1[i] for i in range(len(str2))}
+        self.__alphabet = alphabet
+        self.__permutation = permutation
 
     # The hardest part of the emulation
     def pass_through(self, letter, reverse):
-        source = self.__str1 if not reverse else self.__str2
-        dest = self.__str1 if reverse else self.__str2
-
         # Shift the letter
-        index = (
-            source.find(letter) + (self.pos if not reverse else -self.pos)
-        ) % len(source)
-        letter = source[index]
-
-        # Get transformed letter
-        letter = (
-            self.__normal_dict[letter]
-            if not reverse
-            else self.__reverse_dict[letter]
+        index = (self.__alphabet.find(letter) - self.pos) % len(
+            self.__alphabet
         )
+        letter = self.__alphabet[index]
 
-        # Shift letter back
-        index = (
-            dest.find(letter) + (self.pos if reverse else -self.pos)
-        ) % len(dest)
+        # Do the permutation
+        source = self.__alphabet if not reverse else self.__permutation
+        dest = self.__alphabet if reverse else self.__permutation
+
+        index = source.find(letter)
         letter = dest[index]
+
+        # Shift the letter back
+        index = (self.__alphabet.find(letter) + self.pos) % len(
+            self.__alphabet
+        )
+        letter = self.__alphabet[index]
 
         return letter
 
