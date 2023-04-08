@@ -1,3 +1,7 @@
-# from django.shortcuts import render
+from django.views.generic import FormView
+from .forms import EnigmaConfigForm
 
-# Create your views here.
+
+class EnigmaConfigView(FormView):
+    template_name = 'form.html'
+    form_class = EnigmaConfigForm

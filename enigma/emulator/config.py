@@ -41,10 +41,9 @@ class EnigmaConfig:
         ), 'Alphabet shouldn contain each letter only once'
 
         for rotor in self.rotors:
-            rotor_set = set(rotor) & set(self.alphabet)
-            assert (
-                len(rotor_set) == alphabet_len
-            ), 'Rotor should contain every letter from the alphabet once'
+            assert set(rotor) == set(
+                self.alphabet
+            ), 'Rotor should contain every letter'
 
         letters_used = set()
 
@@ -57,7 +56,7 @@ class EnigmaConfig:
 
         assert (
             len(letters_used) == alphabet_len
-        ), 'Reflector should contain each letter from the alphabet'
+        ), 'Reflector should contain every letter from'
 
         letters_used = set()
 
@@ -75,4 +74,4 @@ class EnigmaConfig:
         for pos in self.positions:
             assert (
                 pos >= 0 and pos < alphabet_len
-            ), 'Rotor position should be between zero and alphabet length'
+            ), 'Rotor position should be between zero and the alphabet length'
