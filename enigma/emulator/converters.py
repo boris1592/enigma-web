@@ -1,5 +1,5 @@
 class ConfigConverter:
-    regex = r'([^;]+\s)*[^;]+;[^;]+;([^;][^;]\s)*[^;][^;];(\d+\s)*\d+;[^;]+'
+    regex = r'.*'
 
     def to_python(self, value):
         return ''
