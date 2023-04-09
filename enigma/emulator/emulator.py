@@ -50,7 +50,10 @@ class EnigmaEmulator:
             Rotor(config.positions[i], config.alphabet, rotor)
             for i, rotor in enumerate(config.rotors)
         ]
-        self.__reflector = pairs_to_dict(config.reflector)
+        self.__reflector = {
+            config.alphabet[i]: config.reflector[i]
+            for i in range(len(config.alphabet))
+        }
         self.__plugs = pairs_to_dict(
             [(letter, letter) for letter in config.alphabet] + config.plugs
         )

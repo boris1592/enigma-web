@@ -1,4 +1,5 @@
 from random import sample, randint
+from dataclasses import dataclass
 
 
 def random_pairs(data):
@@ -10,26 +11,52 @@ def random_config(rotors_count, alphabet):
     rotors = [
         ''.join(sample(alphabet, len(alphabet))) for _ in range(rotors_count)
     ]
-    reflector = random_pairs(alphabet)
+    reflector_pairs = random_pairs(alphabet)
+    reflector_map = {k: v for k, v in reflector_pairs} | {
+        k: v for v, k in reflector_pairs
+    }
+    reflector = [reflector_map[letter] for letter in alphabet]
     plugs = random_pairs(alphabet)
     positions = [randint(0, len(alphabet) - 1) for _ in range(rotors_count)]
     return EnigmaConfig(rotors, reflector, plugs, positions, alphabet)
 
 
+def encode_config(config):
+    # rotor1,rotor2;reflector;plug1,plug2;positions;alphabet
+    return ';'.join(
+        [
+            ','.join(config.rotors),
+            config.reflector,
+            ','.join([l1 + l2 for l1, l2 in config.plugs]),
+            ','.join(map(str, config.positions)),
+            config.alphabet,
+        ]
+    )
+
+
+def decode_config(string):
+    params = string.split(';')
+    assert len(params) == 5, 'Params count should be 5'
+    assert all(
+        [p.isnumeric() for p in params[3].split(',')]
+    ), 'Positions should be integers'
+
+    return EnigmaConfig(
+        params[0].split(','),
+        params[1],
+        [tuple(p) for p in params[2].split(',')],
+        [int(p) for p in params[3].split(',')],
+        params[4],
+    )
+
+
+@dataclass
 class EnigmaConfig:
-    def __init__(
-        self,
-        rotors: list[str],
-        reflector: list[tuple[str, str]],
-        plugs: list[tuple[str, str]],
-        positions: list[int],
-        alphabet,
-    ):
-        self.rotors = rotors
-        self.reflector = reflector
-        self.plugs = plugs
-        self.positions = positions
-        self.alphabet = alphabet
+    rotors: list[str]
+    reflector: str
+    plugs: list[tuple[str, str]]
+    positions: list[int]
+    alphabet: str
 
     def validate(self):
         alphabet_len = len(self.alphabet)
@@ -41,23 +68,22 @@ class EnigmaConfig:
         ), 'Alphabet shouldn contain each letter only once'
 
         for rotor in self.rotors:
-            rotor_set = set(rotor) & set(self.alphabet)
+            assert set(rotor) == set(
+                self.alphabet
+            ), 'Rotor should contain every letter'
+
+        assert set(self.reflector) == set(
+            self.alphabet
+        ), 'Reflector should contain every letter'
+
+        reflector_map = {}
+
+        for i in range(alphabet_len):
             assert (
-                len(rotor_set) == alphabet_len
-            ), 'Rotor should contain every letter from the alphabet once'
-
-        letters_used = set()
-
-        for l1, l2 in self.reflector:
-            assert (
-                l1 not in letters_used and l2 not in letters_used
-            ), 'Reflector should contain each letter once'
-            letters_used.add(l1)
-            letters_used.add(l2)
-
-        assert (
-            len(letters_used) == alphabet_len
-        ), 'Reflector should contain each letter from the alphabet'
+                self.reflector[i] not in reflector_map
+                or reflector_map[self.reflector[i]] == self.alphabet[i]
+            ), 'Reflector should be a product of independent transpositions'
+            reflector_map[self.alphabet[i]] = self.reflector[i]
 
         letters_used = set()
 
@@ -75,4 +101,4 @@ class EnigmaConfig:
         for pos in self.positions:
             assert (
                 pos >= 0 and pos < alphabet_len
-            ), 'Rotor position should be between zero and alphabet length'
+            ), 'Rotor position should be between zero and the alphabet length'
