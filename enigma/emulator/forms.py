@@ -1,6 +1,7 @@
 from django import forms
-from emulator.config import EnigmaConfig
 from string import ascii_uppercase
+
+from emulator.config import EnigmaConfig
 
 
 class EnigmaConfigForm(forms.Form):
@@ -36,3 +37,7 @@ class EnigmaConfigForm(forms.Form):
             self.config.validate()
         except AssertionError as error:
             raise forms.ValidationError(str(error))
+
+
+class EnigmaEmulatorForm(forms.Form):
+    message = forms.CharField()

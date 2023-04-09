@@ -1,8 +1,9 @@
 from django.test import TestCase
-from .config import random_config
-from .emulator import EnigmaEmulator
 from random import sample
 from string import ascii_uppercase
+
+from .config import random_config
+from .emulator import EnigmaEmulator
 
 
 class EnigmaEmulationTests(TestCase):

@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+{% block content %}
+{% if processed %}
+  <h5>Output:</h2>
+  <p>{{ processed }}</p>
+{% endif %}
+
+{% include 'includes/form.html' %}
+{% endblock %}

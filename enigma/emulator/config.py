@@ -1,4 +1,5 @@
 from random import sample, randint
+from dataclasses import dataclass
 
 
 def random_pairs(data):
@@ -20,20 +21,42 @@ def random_config(rotors_count, alphabet):
     return EnigmaConfig(rotors, reflector, plugs, positions, alphabet)
 
 
+def encode_config(config):
+    # rotor1,rotor2;reflector;plug1,plug2;positions;alphabet
+    return ';'.join(
+        [
+            ','.join(config.rotors),
+            config.reflector,
+            ','.join([l1 + l2 for l1, l2 in config.plugs]),
+            ','.join(map(str, config.positions)),
+            config.alphabet,
+        ]
+    )
+
+
+def decode_config(string):
+    params = string.split(';')
+    assert len(params) == 5, 'Params count should be 5'
+    assert all(
+        [p.isnumeric() for p in params[3].split(',')]
+    ), 'Positions should be integers'
+
+    return EnigmaConfig(
+        params[0].split(','),
+        params[1],
+        [tuple(p) for p in params[2].split(',')],
+        [int(p) for p in params[3].split(',')],
+        params[4],
+    )
+
+
+@dataclass
 class EnigmaConfig:
-    def __init__(
-        self,
-        rotors: list[str],
-        reflector: list[str],
-        plugs: list[tuple[str, str]],
-        positions: list[int],
-        alphabet,
-    ):
-        self.rotors = rotors
-        self.reflector = reflector
-        self.plugs = plugs
-        self.positions = positions
-        self.alphabet = alphabet
+    rotors: list[str]
+    reflector: str
+    plugs: list[tuple[str, str]]
+    positions: list[int]
+    alphabet: str
 
     def validate(self):
         alphabet_len = len(self.alphabet)
