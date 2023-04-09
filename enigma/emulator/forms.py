@@ -1,18 +1,28 @@
 from django import forms
 from emulator.config import EnigmaConfig
-from string import ascii_lowercase
+from string import ascii_uppercase
 
 
 class EnigmaConfigForm(forms.Form):
-    alphabet = forms.CharField(initial=ascii_lowercase)
-    rotors = forms.CharField(widget=forms.Textarea)
+    alphabet = forms.CharField(initial=ascii_uppercase)
+    rotors = forms.CharField(
+        widget=forms.Textarea(attrs={'rows': 3}),
+        initial=f'{ascii_uppercase}\n{ascii_uppercase}\n{ascii_uppercase}',
+    )
+    reflector = forms.CharField(initial=ascii_uppercase)
 
     def clean(self):
         cleaned_data = super().clean()
         alphabet = cleaned_data.get('alphabet')
         rotors = cleaned_data.get('rotors')
+        reflector = cleaned_data.get('reflector')
+
         self.config = EnigmaConfig(
-            rotors.split('\n'), None, None, None, alphabet
+            rotors.replace('\r', '').split('\n'),
+            reflector,
+            None,
+            None,
+            alphabet,
         )
 
         try:

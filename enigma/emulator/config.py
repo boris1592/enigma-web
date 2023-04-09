@@ -10,7 +10,11 @@ def random_config(rotors_count, alphabet):
     rotors = [
         ''.join(sample(alphabet, len(alphabet))) for _ in range(rotors_count)
     ]
-    reflector = random_pairs(alphabet)
+    reflector_pairs = random_pairs(alphabet)
+    reflector_map = {k: v for k, v in reflector_pairs} | {
+        k: v for v, k in reflector_pairs
+    }
+    reflector = [reflector_map[letter] for letter in alphabet]
     plugs = random_pairs(alphabet)
     positions = [randint(0, len(alphabet) - 1) for _ in range(rotors_count)]
     return EnigmaConfig(rotors, reflector, plugs, positions, alphabet)
@@ -20,7 +24,7 @@ class EnigmaConfig:
     def __init__(
         self,
         rotors: list[str],
-        reflector: list[tuple[str, str]],
+        reflector: list[str],
         plugs: list[tuple[str, str]],
         positions: list[int],
         alphabet,
@@ -45,18 +49,18 @@ class EnigmaConfig:
                 self.alphabet
             ), 'Rotor should contain every letter'
 
-        letters_used = set()
+        assert set(self.reflector) == set(
+            self.alphabet
+        ), 'Reflector should contain every letter'
 
-        for l1, l2 in self.reflector:
+        reflector_map = {}
+
+        for i in range(alphabet_len):
             assert (
-                l1 not in letters_used and l2 not in letters_used
-            ), 'Reflector should contain each letter once'
-            letters_used.add(l1)
-            letters_used.add(l2)
-
-        assert (
-            len(letters_used) == alphabet_len
-        ), 'Reflector should contain every letter from'
+                self.reflector[i] not in reflector_map
+                or reflector_map[self.reflector[i]] == self.alphabet[i]
+            ), 'Reflector should be a product of independent transpositions'
+            reflector_map[self.alphabet[i]] = self.reflector[i]
 
         letters_used = set()
 
