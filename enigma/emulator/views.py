@@ -21,20 +21,21 @@ class EnigmaConfigView(FormView):
 
 
 class EnigmaEmulatorView(FormView):
-    template_name = 'includes/form.html'
+    template_name = 'emulator.html'
     form_class = EnigmaEmulatorForm
 
     def form_valid(self, form):
         try:
             config = decode_config(self.kwargs['config'])
+            config.validate()
         except AssertionError as error:
             form.add_error(None, f'{str(error)}')
-            return render(self.request, 'form.html', {'form': form})
+            return render(self.request, self.template_name, {'form': form})
 
         emulator = EnigmaEmulator(config)
         processed = emulator.process(form.cleaned_data.get('message'))
         return render(
             self.request,
-            'emulator.html',
+            self.template_name,
             {'processed': processed, 'form': form},
         )
