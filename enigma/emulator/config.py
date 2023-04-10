@@ -15,7 +15,7 @@ def random_config(rotors_count, alphabet):
     reflector_map = {k: v for k, v in reflector_pairs} | {
         k: v for v, k in reflector_pairs
     }
-    reflector = [reflector_map[letter] for letter in alphabet]
+    reflector = ''.join([reflector_map[letter] for letter in alphabet])
     plugs = random_pairs(alphabet)
     positions = [randint(0, len(alphabet) - 1) for _ in range(rotors_count)]
     return EnigmaConfig(rotors, reflector, plugs, positions, alphabet)
