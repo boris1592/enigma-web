@@ -28,6 +28,7 @@ class EnigmaEmulatorView(FormView):
         try:
             config = decode_config(self.kwargs['config'])
             config.validate()
+
         except AssertionError as error:
             form.add_error(None, f'{str(error)}')
             return render(self.request, self.template_name, {'form': form})
