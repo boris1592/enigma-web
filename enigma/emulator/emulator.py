@@ -58,7 +58,7 @@ class EnigmaEmulator:
         return EnigmaConfig(
             [r.permutation for r in self.__rotors],
             ''.join([self.__reflector[letter] for letter in self.__alphabet]),
-            [(l1, l2) for l1, l2 in self.__plugs if l1 != l2],
+            [(l1, l2) for l1, l2 in self.__plugs.items() if l1 != l2],
             [r.pos for r in self.__rotors],
             self.__alphabet,
         )
