@@ -1,4 +1,3 @@
-from os import walk
 from emulator.config import EnigmaConfig
 
 
