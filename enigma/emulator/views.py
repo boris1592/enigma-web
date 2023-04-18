@@ -22,7 +22,16 @@ class EnigmaConfigView(FormView):
 
 class EnigmaEmulatorView(FormView):
     template_name = 'emulator.html'
-    form_class = EnigmaEmulatorForm
+
+    def get(self, request, config):
+        return render(
+            request,
+            self.template_name,
+            {
+                'form': EnigmaEmulatorForm(),
+                'config': decode_config(config),
+            },
+        )
 
     def form_valid(self, form):
         message = form.cleaned_data.get('message')
