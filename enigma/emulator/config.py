@@ -15,39 +15,10 @@ def random_config(rotors_count, alphabet):
     reflector_map = {k: v for k, v in reflector_pairs} | {
         k: v for v, k in reflector_pairs
     }
-    reflector = [reflector_map[letter] for letter in alphabet]
+    reflector = ''.join([reflector_map[letter] for letter in alphabet])
     plugs = random_pairs(alphabet)
     positions = [randint(0, len(alphabet) - 1) for _ in range(rotors_count)]
     return EnigmaConfig(rotors, reflector, plugs, positions, alphabet)
-
-
-def encode_config(config):
-    # rotor1,rotor2;reflector;plug1,plug2;positions;alphabet
-    return ';'.join(
-        [
-            ','.join(config.rotors),
-            config.reflector,
-            ','.join([l1 + l2 for l1, l2 in config.plugs]),
-            ','.join(map(str, config.positions)),
-            config.alphabet,
-        ]
-    )
-
-
-def decode_config(string):
-    params = string.split(';')
-    assert len(params) == 5, 'Params count should be 5'
-    assert all(
-        [p.isnumeric() for p in params[3].split(',')]
-    ), 'Positions should be integers'
-
-    return EnigmaConfig(
-        params[0].split(','),
-        params[1],
-        [tuple(p) for p in params[2].split(',')],
-        [int(p) for p in params[3].split(',')],
-        params[4],
-    )
 
 
 @dataclass
@@ -102,3 +73,31 @@ class EnigmaConfig:
             assert (
                 pos >= 0 and pos < alphabet_len
             ), 'Rotor position should be between zero and the alphabet length'
+
+    def encode(self):
+        # rotor1,rotor2;reflector;plug1,plug2;positions;alphabet
+        return ';'.join(
+            [
+                ','.join(self.rotors),
+                self.reflector,
+                ','.join([l1 + l2 for l1, l2 in self.plugs]),
+                ','.join(map(str, self.positions)),
+                self.alphabet,
+            ]
+        )
+
+    @staticmethod
+    def decode_config(string):
+        params = string.split(';')
+        assert len(params) == 5, 'Params count should be 5'
+        assert all(
+            [p.isnumeric() for p in params[3].split(',')]
+        ), 'Positions should be integers'
+
+        return EnigmaConfig(
+            params[0].split(','),
+            params[1],
+            [tuple(p) for p in params[2].split(',')],
+            [int(p) for p in params[3].split(',')],
+            params[4],
+        )

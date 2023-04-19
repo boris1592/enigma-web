@@ -14,29 +14,25 @@ def pairs_to_dict(pairs):
 class Rotor:
     def __init__(self, pos, alphabet, permutation):
         self.pos = pos
-        self.__alphabet = alphabet
-        self.__permutation = permutation
+        self.alphabet = alphabet
+        self.permutation = permutation
 
     # The hardest part of the emulation
     def pass_through(self, letter, reverse):
         # Shift the letter
-        index = (self.__alphabet.find(letter) - self.pos) % len(
-            self.__alphabet
-        )
-        letter = self.__alphabet[index]
+        index = (self.alphabet.find(letter) - self.pos) % len(self.alphabet)
+        letter = self.alphabet[index]
 
         # Do the permutation
-        source = self.__alphabet if not reverse else self.__permutation
-        dest = self.__alphabet if reverse else self.__permutation
+        source = self.alphabet if not reverse else self.permutation
+        dest = self.alphabet if reverse else self.permutation
 
         index = source.find(letter)
         letter = dest[index]
 
         # Shift the letter back
-        index = (self.__alphabet.find(letter) + self.pos) % len(
-            self.__alphabet
-        )
-        letter = self.__alphabet[index]
+        index = (self.alphabet.find(letter) + self.pos) % len(self.alphabet)
+        letter = self.alphabet[index]
 
         return letter
 
@@ -56,6 +52,23 @@ class EnigmaEmulator:
         }
         self.__plugs = pairs_to_dict(
             [(letter, letter) for letter in config.alphabet] + config.plugs
+        )
+
+    def get_current_config(self):
+        return EnigmaConfig(
+            [r.permutation for r in self.__rotors],
+            ''.join([self.__reflector[letter] for letter in self.__alphabet]),
+            list(
+                set(
+                    [
+                        tuple(sorted([l1, l2]))
+                        for l1, l2 in self.__plugs.items()
+                        if l1 != l2
+                    ]
+                )
+            ),
+            [r.pos for r in self.__rotors],
+            self.__alphabet,
         )
 
     def __rotate_rotors(self):
