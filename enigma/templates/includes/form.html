@@ -17,6 +17,11 @@
     {{ field.label }}
     {{ field }}
   {% endfor %}
-  <input type="submit" value="Submit">
+
+  {% if submit_message %}
+    <input type="submit" value="{{ submit_message }}">
+  {% else %}
+    <input type="submit" value="Submit">
+  {% endif %}
 </form>
 {% endblock %}
