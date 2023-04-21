@@ -8,9 +8,11 @@
   {% include 'includes/form.html' with submit_message="Process" %}
 {% endif %}
 
-<h5>Current configuration:</h5>
-<h6>Alphabet:</h6>
-<p>{{ config.alphabet }}</p>
+{% if config %}
+  <h5>Current configuration:</h5>
+  <h6>Alphabet:</h6>
+  <p>{{ config.alphabet }}</p>
 
-<a href="{% url 'emulator:emulator' config.encode %}" role="button" style="width:100%;">Go to this configuration</a>
+  <a href="{% url 'emulator:emulator' config.encode %}" role="button" style="width:100%;">Go to this configuration</a>
+{% endif %}
 {% endblock %}

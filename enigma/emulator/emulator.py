@@ -61,7 +61,7 @@ class EnigmaEmulator:
             list(
                 set(
                     [
-                        tuple(sorted([l1, l2]))
+                        ''.join(sorted([l1, l2]))
                         for l1, l2 in self.__plugs.items()
                         if l1 != l2
                     ]

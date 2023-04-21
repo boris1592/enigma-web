@@ -30,7 +30,7 @@ class EnigmaEmulatorView(FormView):
             self.template_name,
             {
                 'form': super().get_form(),
-                'config': EnigmaConfig.decode_config(config),
+                'config': EnigmaConfig.decode(config),
             },
         )
 
@@ -38,7 +38,7 @@ class EnigmaEmulatorView(FormView):
         message = form.cleaned_data.get('message')
 
         try:
-            config = EnigmaConfig.decode_config(self.kwargs['config'])
+            config = EnigmaConfig.decode(self.kwargs['config'])
             config.validate()
             assert all(
                 [letter in config.alphabet for letter in message]
@@ -48,7 +48,7 @@ class EnigmaEmulatorView(FormView):
             return render(
                 self.request,
                 self.template_name,
-                {'form': form, 'config': config},
+                {'form': form},
             )
 
         emulator = EnigmaEmulator(config)
