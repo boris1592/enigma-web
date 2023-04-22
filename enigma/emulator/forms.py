@@ -28,7 +28,7 @@ class EnigmaConfigForm(forms.Form):
         self.config = EnigmaConfig(
             rotors.replace('\r', '').split('\n'),
             reflector,
-            [tuple(pair) for pair in plugs.split()],
+            plugs.split(),
             [int(p) for p in positions.split()],
             alphabet,
         )

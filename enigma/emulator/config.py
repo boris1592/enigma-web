@@ -1,10 +1,13 @@
 from random import sample, randint
-from dataclasses import dataclass
+from dataclasses import asdict, dataclass
+from yaml import safe_load, dump
+from dacite import from_dict
+from base64 import b64decode, b64encode
 
 
 def random_pairs(data):
     data = sample(data, len(data))
-    return [(data[i], data[i + 1]) for i in range(0, len(data) - 1, 2)]
+    return [f'{data[i]}{data[i + 1]}' for i in range(0, len(data) - 1, 2)]
 
 
 def random_config(rotors_count, alphabet):
@@ -25,7 +28,7 @@ def random_config(rotors_count, alphabet):
 class EnigmaConfig:
     rotors: list[str]
     reflector: str
-    plugs: list[tuple[str, str]]
+    plugs: list[str]
     positions: list[int]
     alphabet: str
 
@@ -74,30 +77,17 @@ class EnigmaConfig:
                 pos >= 0 and pos < alphabet_len
             ), 'Rotor position should be between zero and the alphabet length'
 
-    def encode(self):
-        # rotor1,rotor2;reflector;plug1,plug2;positions;alphabet
-        return ';'.join(
-            [
-                ','.join(self.rotors),
-                self.reflector,
-                ','.join([l1 + l2 for l1, l2 in self.plugs]),
-                ','.join(map(str, self.positions)),
-                self.alphabet,
-            ]
-        )
+    def dump_yaml(self):
+        return dump(asdict(self))
 
     @staticmethod
-    def decode_config(string):
-        params = string.split(';')
-        assert len(params) == 5, 'Params count should be 5'
-        assert all(
-            [p.isnumeric() for p in params[3].split(',')]
-        ), 'Positions should be integers'
+    def load_yaml(yaml):
+        data = safe_load(yaml)
+        return from_dict(data_class=EnigmaConfig, data=data)
 
-        return EnigmaConfig(
-            params[0].split(','),
-            params[1],
-            [tuple(p) for p in params[2].split(',')],
-            [int(p) for p in params[3].split(',')],
-            params[4],
-        )
+    def encode(self):
+        return b64encode(self.dump_yaml().encode()).decode()
+
+    @staticmethod
+    def decode(string):
+        return EnigmaConfig.load_yaml(b64decode(string).decode())
