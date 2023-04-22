@@ -72,16 +72,18 @@ class EnigmaEmulator:
         )
 
     def __rotate_rotors(self):
-        self.__rotors[0].pos += 1
+        self.__rotors[0].pos -= 1
 
         for i in range(0, len(self.__rotors)):
-            if self.__rotors[i].pos < len(self.__alphabet):
-                break
-
             self.__rotors[i].pos %= len(self.__alphabet)
 
-            if i < len(self.__rotors) - 1:
-                self.__rotors[i + 1].pos += 1
+            if (
+                i < len(self.__rotors) - 1
+                and self.__rotors[i].pos == len(self.__alphabet) - 1
+            ):
+                self.__rotors[i + 1].pos -= 1
+            else:
+                break
 
     def __pass_through_rotors(self, letter):
         for rotor in self.__rotors:

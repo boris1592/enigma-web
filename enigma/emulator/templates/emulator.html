@@ -10,8 +10,8 @@
 
 {% if config %}
   <h5>Current configuration:</h5>
-  <h6>Alphabet:</h6>
-  <p>{{ config.alphabet }}</p>
+  <h6>Rotor positions:</h6>
+  <p>{{ config.get_positions }}</p>
 
   <a href="{% url 'emulator:emulator' config.encode %}" role="button" style="width:100%;">Go to this configuration</a>
 {% endif %}
