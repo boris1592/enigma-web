@@ -77,10 +77,6 @@ class EnigmaConfig:
                 pos >= 0 and pos < alphabet_len
             ), 'Rotor position should be between zero and the alphabet length'
 
-    # For templates
-    def get_positions(self):
-        return ' '.join(map(str, self.positions))
-
     def dump_yaml(self):
         return dump(asdict(self))
 
@@ -95,3 +91,7 @@ class EnigmaConfig:
     @staticmethod
     def decode(string):
         return EnigmaConfig.load_yaml(b64decode(string).decode())
+
+    # Templates crap
+    def get_positions(self):
+        return ' '.join(map(str, self.positions))

@@ -1,7 +1,8 @@
 {% extends 'base.html' %}
 {% block content %}
+
 {% if processed %}
-  <h5>Output:</h2>
+  <h5>Output:</h5>
   <p>{{ processed }}</p>
   {% include 'includes/form.html' with submit_message="Process with previous configuration" %}
 {% else %}
@@ -10,9 +11,20 @@
 
 {% if config %}
   <h5>Current configuration:</h5>
-  <h6>Rotor positions:</h6>
-  <p>{{ config.get_positions }}</p>
-
+  <p>Alphabet: {{ config.alphabet }}</p>
+  <p>Rotor positions: {{ config.get_positions }}</p>
+  <p>Rotors:<br>
+    {% for rotor in config.rotors %}
+      {{ rotor }}<br>
+    {% endfor %}
+  </p>
+  <p>Reflector: {{ config.reflector }}</p>
+  <p>Plugs:
+    {% for plug in config.plugs %}
+      {{ plug }}
+    {% endfor %}
+  </p>
   <a href="{% url 'emulator:emulator' config.encode %}" role="button" style="width:100%;">Go to this configuration</a>
 {% endif %}
+
 {% endblock %}
