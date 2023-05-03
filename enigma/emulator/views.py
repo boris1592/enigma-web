@@ -48,7 +48,7 @@ class EnigmaEmulatorView(FormView):
             return render(
                 self.request,
                 self.template_name,
-                {'form': form},
+                {'form': form, 'config': config},
             )
 
         emulator = EnigmaEmulator(config)
