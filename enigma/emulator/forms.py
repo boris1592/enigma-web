@@ -40,4 +40,5 @@ class EnigmaConfigForm(forms.Form):
 
 
 class EnigmaEmulatorForm(forms.Form):
-    message = forms.CharField()
+    message = forms.CharField(required=False)
+    file = forms.FileField(required=False)

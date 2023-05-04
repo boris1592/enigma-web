@@ -29,13 +29,18 @@ class EnigmaEmulatorView(FormView):
             request,
             self.template_name,
             {
-                'form': super().get_form(),
+                'form': self.get_form(),
                 'config': EnigmaConfig.decode(config),
             },
         )
 
     def form_valid(self, form):
         message = form.cleaned_data.get('message')
+
+        if form.cleaned_data.get('file') is not None:
+            message = (
+                form.cleaned_data.get('file').read().decode('utf-8').strip()
+            )
 
         try:
             config = EnigmaConfig.decode(self.kwargs['config'])
@@ -45,11 +50,7 @@ class EnigmaEmulatorView(FormView):
             ), 'All letters from message should be in alphabet'
         except AssertionError as error:
             form.add_error(None, f'{str(error)}')
-            return render(
-                self.request,
-                self.template_name,
-                {'form': form, 'config': config},
-            )
+            return render(self.request, self.template_name, {'form': form})
 
         emulator = EnigmaEmulator(config)
         processed = emulator.process(message)
