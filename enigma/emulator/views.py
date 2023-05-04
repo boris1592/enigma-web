@@ -7,11 +7,23 @@ from .config import EnigmaConfig
 from .emulator import EnigmaEmulator
 
 
+def response_file(data, filename):
+    response = HttpResponse(
+        data.encode('utf-8'),
+        content_type='text/plaing',
+    )
+    response['Content-Disposition'] = f'attachment; filename="{filename}"'
+    return response
+
+
 class EnigmaConfigView(FormView):
     template_name = 'config.html'
     form_class = EnigmaConfigForm
 
     def form_valid(self, form):
+        if 'export_file' in self.request.POST:
+            return response_file(form.config.dump_yaml(), 'config.yml')
+
         return redirect(
             reverse(
                 'emulator:emulator',
@@ -74,13 +86,7 @@ class EnigmaEmulatorView(FormView):
         processed = emulator.process(message)
 
         if 'export_file' in self.request.POST:
-            response = HttpResponse(
-                processed.encode('utf-8'), content_type='text/plain'
-            )
-            response[
-                'Content-Disposition'
-            ] = 'attachment; filename="output.txt"'
-            return response
+            return response_file(processed, 'output.txt')
 
         return render(
             self.request,
