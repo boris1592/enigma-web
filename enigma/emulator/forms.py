@@ -39,6 +39,10 @@ class EnigmaConfigForm(forms.Form):
             raise forms.ValidationError(str(error))
 
 
+class EnigmaFileConfigForm(forms.Form):
+    file = forms.FileField()
+
+
 class EnigmaEmulatorForm(forms.Form):
     message = forms.CharField(required=False)
     file = forms.FileField(required=False)

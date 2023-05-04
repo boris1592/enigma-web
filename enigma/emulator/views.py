@@ -2,7 +2,7 @@ from django.views.generic import FormView
 from django.urls.base import reverse
 from django.shortcuts import redirect, render
 
-from .forms import EnigmaConfigForm, EnigmaEmulatorForm
+from .forms import EnigmaConfigForm, EnigmaEmulatorForm, EnigmaFileConfigForm
 from .config import EnigmaConfig
 from .emulator import EnigmaEmulator
 
@@ -17,6 +17,24 @@ class EnigmaConfigView(FormView):
                 'emulator:emulator',
                 kwargs={'config': form.config.encode()},
             )
+        )
+
+
+class EnigmaFileConfigView(FormView):
+    template_name = 'file_config.html'
+    form_class = EnigmaFileConfigForm
+
+    def form_valid(self, form):
+        yaml = form.cleaned_data.get('file').read().decode('utf-8').strip()
+
+        try:
+            config = EnigmaConfig.load_yaml(yaml)
+        except Exception:
+            form.add_error('Unable to parse file')
+            return render(self.request, self.template_name, {'form': form})
+
+        return redirect(
+            reverse('emulator:emulator', kwargs={'config': config.encode()})
         )
 
 
