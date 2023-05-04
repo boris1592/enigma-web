@@ -39,7 +39,7 @@ class EnigmaConfig:
 
         assert (
             len(set(self.alphabet)) == alphabet_len
-        ), 'Alphabet shouldn contain each letter only once'
+        ), 'Alphabet should contain each letter only once'
 
         for rotor in self.rotors:
             assert set(rotor) == set(

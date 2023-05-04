@@ -1,18 +1,26 @@
 from django import forms
 from string import ascii_uppercase
 
-from emulator.config import EnigmaConfig
+from emulator.config import EnigmaConfig, random_config
 
 
 class EnigmaConfigForm(forms.Form):
-    alphabet = forms.CharField(initial=ascii_uppercase)
+    alphabet = forms.CharField()
     rotors = forms.CharField(
         widget=forms.Textarea(attrs={'rows': 3}),
-        initial=f'{ascii_uppercase}\n{ascii_uppercase}\n{ascii_uppercase}',
     )
-    reflector = forms.CharField(initial=ascii_uppercase)
-    plugs = forms.CharField(initial='AB DC')
-    positions = forms.CharField(initial='1 2 3')
+    reflector = forms.CharField()
+    plugs = forms.CharField()
+    positions = forms.CharField()
+
+    def __init__(self, *args, **kwargs):
+        super(forms.Form, self).__init__(*args, **kwargs)
+        config = random_config(3, ascii_uppercase)
+        self.fields['alphabet'].initial = config.alphabet
+        self.fields['rotors'].initial = '\n'.join(config.rotors)
+        self.fields['reflector'].initial = config.reflector
+        self.fields['plugs'].initial = ' '.join(config.plugs)
+        self.fields['positions'].initial = ' '.join(map(str, config.positions))
 
     def clean(self):
         cleaned_data = super().clean()
