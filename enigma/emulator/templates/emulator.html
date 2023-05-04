@@ -1,34 +1,36 @@
 {% extends 'base.html' %}
 {% block content %}
 <div class="grid">
-  <div>
-    <h5>Current configuration:</h5>
-    <p>Alphabet: {{ config.alphabet }}</p>
-    <p>Rotor positions: {{ config.get_positions }}</p>
-    <p>
-      Rotors:<br />
-      {% for rotor in config.rotors %} 
-        {{ rotor }}<br />
-      {% endfor %}
-    </p>
-    <p>Reflector: {{ config.reflector }}</p>
-    <p>Plugs: {% for plug in config.plugs %} {{ plug }} {% endfor %}</p>
-    <a
-      href="{% url 'emulator:emulator' config.encode %}"
-      role="button"
-      style="width: 100%"
-      >Go to this configuration</a
-    >
-  </div>
-
+  {% if config %}
+    <div>
+      <h5>Current configuration:</h5>
+      <p>Alphabet: {{ config.alphabet }}</p>
+      <p>Rotor positions: {{ config.get_positions }}</p>
+      <p>
+        Rotors:<br />
+        {% for rotor in config.rotors %} 
+          {{ rotor }}<br />
+        {% endfor %}
+      </p>
+      <p>Reflector: {{ config.reflector }}</p>
+      <p>Plugs: {% for plug in config.plugs %} {{ plug }} {% endfor %}</p>
+      <a
+        href="{% url 'emulator:emulator' config.encode %}"
+        role="button"
+        style="width: 100%"
+      >Go to this configuration</a> 
+    </div>
+  {% endif %}
+  
   <div>
     {% if processed %}
       <h5>Output:</h5>
       <p>{{ processed }}</p>
-      {% include 'includes/form.html' with submit_message="Process with previous configuration" %}
-    {% else %}
-      {% include 'includes/form.html' with submit_message="Process" %}
     {% endif %}
+    <form method="post" enctype="multipart/form-data">
+      {% include 'includes/form.html' with submit_message="Process" %}
+      <input type="submit" name="export_file" value="Process to file">
+    </form>
   </div>
 </div>
 {% endblock %}

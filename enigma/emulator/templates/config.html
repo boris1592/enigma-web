@@ -1,4 +1,7 @@
 {% extends 'base.html' %}
 {% block content %}
-{% include 'includes/form.html' %}
+<form method="post">
+  {% include 'includes/form.html' %}
+  <input type="submit" name="export_file" value="Process to file">
+</form>
 {% endblock %}
