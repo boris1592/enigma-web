@@ -1,19 +1,17 @@
 from django import forms
-from string import ascii_lowercase, ascii_uppercase
-
+from string import ascii_uppercase
 
 from emulator.config import EnigmaConfig, random_config
 
 
 class EnigmaConfigForm(forms.Form):
-    alphabet = forms.CharField(initial=ascii_uppercase)
+    alphabet = forms.CharField()
     rotors = forms.CharField(
         widget=forms.Textarea(attrs={'rows': 3}),
-        initial=f'{ascii_uppercase}\n{ascii_uppercase}\n{ascii_uppercase}',
     )
-    reflector = forms.CharField(initial=ascii_uppercase)
-    plugs = forms.CharField(initial='AB DC')
-    positions = forms.CharField(initial='1 2 3')
+    reflector = forms.CharField()
+    plugs = forms.CharField()
+    positions = forms.CharField()
 
     def __init__(self, *args, **kwargs):
         super(forms.Form, self).__init__(*args, **kwargs)
