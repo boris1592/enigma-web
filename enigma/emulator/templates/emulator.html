@@ -27,7 +27,10 @@
       <h5>Output:</h5>
       <p>{{ processed }}</p>
     {% endif %}
-    {% include 'includes/form.html' with submit_message="Process" %}
+    <form method="post" enctype="multipart/form-data">
+      {% include 'includes/form.html' with submit_message="Process" %}
+      <input type="submit" name="export_file" value="Process to file">
+    </form>
   </div>
 </div>
 {% endblock %}

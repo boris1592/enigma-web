@@ -1,6 +1,6 @@
 from django.views.generic import FormView
 from django.urls.base import reverse
-from django.shortcuts import redirect, render
+from django.shortcuts import HttpResponse, redirect, render
 
 from .forms import EnigmaConfigForm, EnigmaEmulatorForm, EnigmaFileConfigForm
 from .config import EnigmaConfig
@@ -72,6 +72,16 @@ class EnigmaEmulatorView(FormView):
 
         emulator = EnigmaEmulator(config)
         processed = emulator.process(message)
+
+        if 'export_file' in self.request.POST:
+            response = HttpResponse(
+                processed.encode('utf-8'), content_type='text/plain'
+            )
+            response[
+                'Content-Disposition'
+            ] = 'attachment; filename="output.txt"'
+            return response
+
         return render(
             self.request,
             self.template_name,
