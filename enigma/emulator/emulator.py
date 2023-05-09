@@ -20,7 +20,7 @@ class Rotor:
     # The hardest part of the emulation
     def pass_through(self, letter, reverse):
         # Shift the letter
-        index = (self.alphabet.find(letter) - self.pos) % len(self.alphabet)
+        index = (self.alphabet.find(letter) + self.pos) % len(self.alphabet)
         letter = self.alphabet[index]
 
         # Do the permutation
@@ -31,7 +31,7 @@ class Rotor:
         letter = dest[index]
 
         # Shift the letter back
-        index = (self.alphabet.find(letter) + self.pos) % len(self.alphabet)
+        index = (self.alphabet.find(letter) - self.pos) % len(self.alphabet)
         letter = self.alphabet[index]
 
         return letter
@@ -72,16 +72,13 @@ class EnigmaEmulator:
         )
 
     def __rotate_rotors(self):
-        self.__rotors[0].pos -= 1
+        self.__rotors[0].pos += 1
 
         for i in range(0, len(self.__rotors)):
             self.__rotors[i].pos %= len(self.__alphabet)
 
-            if (
-                i < len(self.__rotors) - 1
-                and self.__rotors[i].pos == len(self.__alphabet) - 1
-            ):
-                self.__rotors[i + 1].pos -= 1
+            if i < len(self.__rotors) - 1 and self.__rotors[i].pos == 1:
+                self.__rotors[i + 1].pos += 1
             else:
                 break
 
