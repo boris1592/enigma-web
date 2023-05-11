@@ -86,11 +86,13 @@ class EnigmaConfig:
         return from_dict(data_class=EnigmaConfig, data=data)
 
     def encode(self):
-        return b64encode(self.dump_yaml().encode()).decode()
+        return b64encode(self.dump_yaml().encode()).decode().replace('/', '-')
 
     @staticmethod
     def decode(string):
-        return EnigmaConfig.load_yaml(b64decode(string).decode())
+        return EnigmaConfig.load_yaml(
+            b64decode(string.replace('-', '/')).decode()
+        )
 
     # Templates crap
     def get_positions(self):
